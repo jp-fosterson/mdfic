@@ -3,13 +3,13 @@ mdfic.makefile - Create project makefiles
 """
 
 SINGLE_TEMPLATE = """
+STORY={name}
 
-
-default: pdf html docx
+default: pdf html docx epub
 
 all: pdf html docx epub mobi tex
 
-pdf: out/$(STORY)-article.pdf out/$(STORY)-sffms.pdf
+pdf: out/$(STORY)-sffms.pdf
 
 html: out/$(STORY).html
 
@@ -20,6 +20,8 @@ epub: out/$(STORY).epub
 mobi: out/$(STORY).mobi
 
 tex: $(STORY)-article.tex $(STORY)-sffms.tex
+
+article: out/$(STORY)-article.pdf 
 
 css: out/$(STORY).css
 
@@ -32,14 +34,8 @@ view: .view
 %-sffms.tex: metadata.yaml %.md
 	mdfic latex --documentclass=sffms --output=$@ $^
 
-out/%.pdf: %.tex | out
-	pdflatex $<
-	pdflatex $<
-	mv `basename $@` $@
 
-
-# out/%.pdf: out/%.docx | out
-# 	mdfic pages-to-pdf $< --output=$@
+{pdftarget}
 
 out/%.html: %.md out/%.css | out
 	mdfic html --css=out/$*.css  $< -o $@ 
@@ -82,9 +78,11 @@ all-clean: clean out-clean
 #-----------------------------------
 
 MULTI_TEMPLATE = """
+STORY={name}
+
 HTMLPARTS := $(patsubst %.md,out/%.html,$(wildcard $(STORY)-*.md))
 
-default: pdf html htmlparts docx 
+default: pdf html htmlparts docx epub
 
 all: default epub mobi tex
 
@@ -116,11 +114,7 @@ $(STORY).md: $(STORY)-*.md metadata.yaml
 %-sffms.tex: metadata.yaml %.md 
 	mdfic latex --documentclass=sffms --output=$@ $^
 
-
-out/%.pdf: %.tex | out
-	pdflatex $<
-	pdflatex $<
-	mv `basename $@` $@
+{pdftarget}
 
 out/%.html: %.md out/%.css | out
 	mdfic html --css=out/$*.css  $< -o $@ 
@@ -159,7 +153,42 @@ out-clean:
 all-clean: clean out-clean
 """
 
-def makefile(name, template='single'):
+LATEX_PDF_TARGET = """\
+out/%.pdf: %.tex | out
+	pdflatex $<
+	pdflatex $<
+	mv `basename $@` $@
+"""
+
+PAGES_PDF_TARGET = """\
+out/%.pdf: out/%.docx | out
+	mdfic pages-to-pdf $< --output=$@
+"""
+
+
+def makefile(name: str, 
+			 multi: bool = False,
+			 latex: bool = False,
+			 ):
 	"""
+	Return a Makefile
+
+	Arguments
+
+	name: the story name
+	template: {'single','multi'} Which template to use, 
+	        'single' for single-file stories
+			'multi' for multi-file
+	pdf: {'pages','latex'} : whether to build pdfs using Pages or LaTeX.
 	"""
-	return "STORY={}\n\n".format(name) + globals()[template.upper()+'_TEMPLATE']
+	if latex:
+		pdftarget = LATEX_PDF_TARGET
+	else:
+		pdftarget = PAGES_PDF_TARGET
+
+	if multi:
+		template =  MULTI_TEMPLATE
+	else:
+		template = SINGLE_TEMPLATE
+
+	return template.format(name=name,pdftarget=pdftarget)

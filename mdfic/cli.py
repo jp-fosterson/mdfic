@@ -17,7 +17,9 @@ import datetime
 
 ############################
 log_level = os.environ.get('LOG_LEVEL', 'ERROR')
-logging.basicConfig(level = getattr(logging,log_level))
+logging.basicConfig(
+    level = getattr(logging,log_level)
+    )
 logger = logging.getLogger(__name__)
 ############################
 
@@ -154,10 +156,10 @@ def pages_to_pdf(file,output):
 
 
 @cli.command('gitignore')
-@click.option('--name',type=str,required=True, help="The filename stem of the story.")
+@click.option('--name',type=str, required=True, help="The filename stem of the story.")
 @click.option('--output', '-o', type=str,default="-", help="File to write to. (default stdout)")
-@click.option('--multi/--no-multi',default=False,help="Is this a multi-part story")
-def gitignore(name,output,multi):
+@click.option('--multi/--no-multi', default=False, help="Is this a multi-part story?")
+def gitignore(name,output,multi,latex):
     """
     Output a .gitignore file for a story directory
     """
@@ -250,15 +252,16 @@ def wc(files,wpm):
 
 @cli.command('makefile')
 @click.option('--name',type=str,required=True, help="The filename stem of the story.")
-@click.option('--template', type=str, default='single', help="The template name {single|multi} default=single")
+@click.option('--multi/--no-multi', default=False, help="Is this a multi-part story?")
+@click.option('--latex/--no-latex', default=False, help="Use LaTeX to generate PDFs?")
 @click.option('--output', '-o',  type=str, default='-', help="The name of the file to write to. (default=stdout)")
-def makefile(name,template,output):
+def makefile(name,multi,latex,output):
     """
     Generate a makefile for a new project.
     """
     from .makefile import makefile
     with click.open_file(output,'w') as f:
-        m = makefile(name=name, template=template)
+        m = makefile(name=name, multi=multi, latex=latex)
         f.write(m)
 
 @cli.command('tweet')
@@ -337,7 +340,23 @@ def progress(since,files):
     words = len(added.split())
     print(words)
 
-if __name__ == '__main__':
+@cli.command("copyedit")
+@click.option("--strength", type=str, default='light')
+@click.option('--output', '-o',  type=str, default='-', help="File to write output to. (default stdout)")
+@click.argument('files',nargs=-1,type=str)
+def copyedit(strength,output,files):
+    from .copyedit import copyedit
+    from pathlib import Path
 
+    for filename in files:
+        with click.open_file(filename) as inp:
+            contents = inp.read()
+        edited_contents = copyedit(contents,strength=strength)
+        with click.open_file(output,'w') as out:
+            out.write(edited_contents)
+
+
+
+if __name__ == '__main__':
     cli()
 

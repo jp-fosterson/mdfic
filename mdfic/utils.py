@@ -17,6 +17,26 @@ def fix_sentence_spacing(txt,N=1):
     """
     return re.sub('[.][ ]+', '.'+' '*N, txt)
 
+def split_metadata_and_text(doc):
+    """
+    Take a markdown story with an optional yaml
+    metadata block at the beginning starting with `---`
+    and ending with either `...` or `---`.  followed by text.
+
+    Return a pair of strings (metadata,text), where metadata
+    is None if there was no metadata.
+    """
+    doc = doc.strip()
+    if doc.startswith('---\n'):
+        if '...' in doc:
+            mdblock,textblock = doc[4:].split('...', maxsplit=1)
+        elif  '---' in doc[4:]:
+            mdblock,textblock = doc[4:].split('---', maxsplit=1)
+        else:
+            raise ValueError("Unknown problem finding markdown metadata block.")
+        return mdblock,textblock
+    else:
+        return None,doc
 
 def parse_metadata(doc,join='\n'):
     """
@@ -24,9 +44,9 @@ def parse_metadata(doc,join='\n'):
     as a YAML dict and return it.
     """
     doc = doc.strip()
-    if doc.startswith('---\n') and ('...' in doc or '---' in doc[4:]):
+    yblock,_ = split_metadata_and_text(doc)
+    if yblock is not None:
         # found starting yaml block
-        yblock = doc[4:].split('...')[0].split('---')[0]
         meta = yaml.load(yblock, Loader=yaml.SafeLoader)
         for k in meta.keys():
             val = meta[k]

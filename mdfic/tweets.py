@@ -51,7 +51,7 @@ def split_tweets(para, delim, maxlen=280):
 
 
 
-def generate(text,maxlen,appendix=''):
+def generate(text,maxlen,appendix='',add_counter=True):
     """
     Generate a set of tweets of length at most maxlen
     from the given text, trying to intelligently break
@@ -77,6 +77,10 @@ def generate(text,maxlen,appendix=''):
     tweets = phrases 
     appendix = appendix.replace("\\n","\n")
     for i,t in enumerate(tweets):
-        s = "{t}\n{tweet}/{total}{appendix}".format(t=t,appendix=appendix,tweet=i+1, total=len(tweets))
+        if add_counter:
+            counter = f"\n{i+1}/{len(tweets)}"
+        else:
+            counter = ""
+        s = f"{t}{counter}{appendix}"
         yield len(s),s
         
