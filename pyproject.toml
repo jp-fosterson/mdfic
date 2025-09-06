@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mdfic"
+version = "1.0.0a0"
+authors = [
+    {name = "JP Fosterson", email = "jp.fosterson@gmail.com"}
+]
+description = "# MDFIC - Markdown Fiction Toolkit"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.6"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Text Processing :: Markup",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "click",
+    "markdown",
+    "python-docx",
+    "PyYAML",
+]
+
+[project.scripts]
+mdfic = "mdfic.cli:cli"
+
+[project.urls]
+Homepage = "https://github.com/jpfosterson/mdfic"
+Repository = "https://github.com/jpfosterson/mdfic"
+Issues = "https://github.com/jpfosterson/mdfic/issues"
+
+[tool.setuptools]
+packages = ["mdfic"]
+
+[tool.setuptools.package-dir]
+"" = "."
