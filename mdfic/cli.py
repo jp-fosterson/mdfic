@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Copyright (c) 2025 JP Fosterson
+# SPDX-License-Identifier: MIT
+
 """
 References for manuscript format:
 
