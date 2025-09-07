@@ -11,14 +11,12 @@ authors = [
 description = "# MDFIC - Markdown Fiction Toolkit"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.6"
+requires-python = ">=3.8.1"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: End Users/Desktop",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -29,9 +27,13 @@ classifiers = [
 ]
 dependencies = [
     "click",
+    "langchain>=0.1.0",
+    "langchain-openai",
+    "langchain-core",
     "markdown",
     "python-docx",
     "PyYAML",
+    "keyring>=25.5.0",
 ]
 
 [project.scripts]

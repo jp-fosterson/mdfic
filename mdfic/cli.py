@@ -13,7 +13,8 @@ References for manuscript format:
 import click
 import logging
 import os
-import datetime 
+import sys
+import datetime
 
 
 
@@ -21,8 +22,11 @@ import datetime
 ############################
 log_level = os.environ.get('LOG_LEVEL', 'ERROR')
 logging.basicConfig(
-    level = getattr(logging,log_level)
-    )
+    level=getattr(logging, log_level),
+    stream=sys.stderr,
+    format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 logger = logging.getLogger(__name__)
 ############################
 

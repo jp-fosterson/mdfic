@@ -231,7 +231,7 @@ MDFIC follows professional manuscript formatting guidelines:
 
 ## Dependencies
 
-- **Python 3.6+**
+- **Python 3.8.1+**
 - **Pandoc**: For format conversions
 - **LaTeX** (optional): For PDF generation via LaTeX
 - **Apple Pages** (macOS only): Alternative PDF generation
