@@ -199,6 +199,69 @@ mdfic copyedit --strength medium --output edited.md story.md
 mdfic tweet --maxlen 280 --output tweets.txt story.md
 ```
 
+### Copyedit Configuration
+
+The `mdfic copyedit` command provides AI-powered copyediting using OpenAI's language models. This feature requires proper configuration:
+
+**Prerequisites:**
+- OpenAI API account and API key
+- Python `keyring` library (installed with mdfic)
+
+**Setup:**
+1. Set your OpenAI username in environment:
+   ```bash
+   export OPENAI_USER="your-openai-email@example.com"
+   ```
+
+2. Store your API key in the system keyring:
+   ```python
+   import keyring
+   keyring.set_password("api.openai.com", "your-openai-email@example.com", "your-api-key")
+   ```
+
+**Configuration Options:**
+- `MDFIC_MODEL_NAME`: OpenAI model to use (default: `gpt-5-mini`)
+- `MDFIC_MAX_WORDS`: Maximum words per API request chunk (default: `80000`)
+
+**Strength Levels:**
+- `light`: Grammar, spelling, and punctuation corrections only
+- `medium`: Light corrections plus clarity improvements
+- `heavy`: Comprehensive editing with style suggestions
+
+**Usage Examples:**
+```bash
+# Light copyedit with default settings
+mdfic copyedit story.md
+
+# Medium strength edit to new file
+mdfic copyedit --strength medium --output edited.md story.md
+
+# Heavy edit of multiple chapters
+mdfic copyedit --strength heavy chapter*.md > full-edit.md
+```
+
+### Model Configuration
+
+MDFIC's AI features can be customized through environment variables:
+
+**OpenAI Configuration:**
+```bash
+# Required for copyedit feature
+export OPENAI_USER="your-email@example.com"
+
+# Optional model settings
+export MDFIC_MODEL_NAME="gpt-4"           # Default: gpt-5-mini
+export MDFIC_MAX_WORDS="50000"           # Default: 80000
+```
+
+**Model Selection:**
+- `gpt-5-mini`: Fast, cost-effective for most copyedit tasks
+- `gpt-4`: Higher quality but more expensive
+- `gpt-4-turbo`: Balance of quality and speed
+
+**Processing Limits:**
+Large manuscripts are automatically chunked based on `MDFIC_MAX_WORDS` to stay within API limits. Each chunk is processed separately and reassembled with original formatting preserved.
+
 ### Advanced Features
 
 **Scene numbering:**

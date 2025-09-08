@@ -352,6 +352,53 @@ def progress(since,files):
 @click.option('--output', '-o',  type=str, default='-', help="File to write output to. (default stdout)")
 @click.argument('files',nargs=-1,type=str)
 def copyedit(strength,output,files):
+    """
+    Perform automated copyediting on Markdown fiction files using AI.
+    
+    This command uses OpenAI's language models to copyedit fiction manuscripts,
+    correcting grammar, spelling, punctuation, and improving clarity while
+    preserving the author's voice and style.
+    
+    CONFIGURATION:
+    
+    The copyedit feature requires OpenAI API access and can be configured via:
+    
+    Environment Variables:
+    - OPENAI_USER: Your OpenAI account username/email (required)
+    - MDFIC_MODEL_NAME: OpenAI model to use (default: 'gpt-5-mini')
+    - MDFIC_MAX_WORDS: Maximum words per chunk sent to API (default: 80000)
+    
+    API Key Storage:
+    - API key must be stored in system keyring under service "api.openai.com"
+    - Use: keyring.set_password("api.openai.com", "your-username", "your-api-key")
+    
+    STRENGTH LEVELS:
+    
+    - light: Minimal corrections (grammar, spelling, punctuation only)
+    - medium: Light corrections plus clarity improvements
+    - heavy: Comprehensive editing including style suggestions
+    
+    EDITING BEHAVIOR:
+    
+    - Preserves author's voice and writing style
+    - Never edits dialogue or quoted passages
+    - Maintains original whitespace and paragraph structure
+    - Respects scene breaks (---) and markdown formatting
+    - Does not sanitize profanity or mature content
+    - Prefers simple, direct words over complex alternatives
+    - May insert suggestions as [TKTK: comment] for author review
+    
+    PROCESSING:
+    
+    Large files are automatically chunked to stay within API limits.
+    Each chunk is processed separately and reassembled with original
+    YAML metadata preserved.
+    
+    Examples:
+        mdfic copyedit --strength light story.md
+        mdfic copyedit --strength medium --output edited.md story.md
+        mdfic copyedit --strength heavy chapter*.md > full-edit.md
+    """
     from .copyedit import copyedit
     from pathlib import Path
 
