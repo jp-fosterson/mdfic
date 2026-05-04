@@ -201,7 +201,7 @@ mdfic tweet --maxlen 280 --output tweets.txt story.md
 
 ### Copyedit Configuration
 
-The `mdfic copyedit` command provides AI-powered copyediting using OpenAI's language models. This feature requires proper configuration:
+The `mdfic copyedit` command runs an AI-assisted copyedit using OpenAI's language models. The strength flag and model are passed through to a single fixed prompt; results vary with the model you choose.
 
 **Prerequisites:**
 - OpenAI API account and API key
@@ -220,17 +220,28 @@ The `mdfic copyedit` command provides AI-powered copyediting using OpenAI's lang
    ```
 
 **Configuration Options:**
-- `MDFIC_MODEL_NAME`: OpenAI model to use (default: `gpt-5-mini`)
-- `MDFIC_MAX_WORDS`: Maximum words per API request chunk (default: `80000`)
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `OPENAI_USER` | Keyring username used to look up the API key | (required) |
+| `MDFIC_MODEL_NAME` | OpenAI model to use | `gpt-5-mini` |
+| `MDFIC_MAX_WORDS` | Maximum words per API request chunk | `80000` |
 
 **Strength Levels:**
-- `light`: Grammar, spelling, and punctuation corrections only
-- `medium`: Light corrections plus clarity improvements
-- `heavy`: Comprehensive editing with style suggestions
+
+The `--strength` value is interpolated into the prompt as a hint to the model — there is no per-level branching in the code. Common values are `light`, `medium`, and `heavy`; the model interprets these on its own and the actual edits depend on the model. You can pass any string the model can sensibly act on.
+
+**Model Selection:**
+
+Any chat-completions model your account can access will work. `gpt-5-mini` (the default) is fast and cheap; larger models such as `gpt-4o` or `gpt-4-turbo` typically give more thorough edits at higher cost.
+
+**Processing:**
+
+Large manuscripts are automatically chunked based on `MDFIC_MAX_WORDS` to stay within API context limits. Each chunk is processed separately and reassembled with the original front matter preserved verbatim.
 
 **Usage Examples:**
 ```bash
-# Light copyedit with default settings
+# Default copyedit
 mdfic copyedit story.md
 
 # Medium strength edit to new file
@@ -239,28 +250,6 @@ mdfic copyedit --strength medium --output edited.md story.md
 # Heavy edit of multiple chapters
 mdfic copyedit --strength heavy chapter*.md > full-edit.md
 ```
-
-### Model Configuration
-
-MDFIC's AI features can be customized through environment variables:
-
-**OpenAI Configuration:**
-```bash
-# Required for copyedit feature
-export OPENAI_USER="your-email@example.com"
-
-# Optional model settings
-export MDFIC_MODEL_NAME="gpt-4"           # Default: gpt-5-mini
-export MDFIC_MAX_WORDS="50000"           # Default: 80000
-```
-
-**Model Selection:**
-- `gpt-5-mini`: Fast, cost-effective for most copyedit tasks
-- `gpt-4`: Higher quality but more expensive
-- `gpt-4-turbo`: Balance of quality and speed
-
-**Processing Limits:**
-Large manuscripts are automatically chunked based on `MDFIC_MAX_WORDS` to stay within API limits. Each chunk is processed separately and reassembled with original formatting preserved.
 
 ### Advanced Features
 
@@ -294,7 +283,7 @@ MDFIC follows professional manuscript formatting guidelines:
 
 ## Dependencies
 
-- **Python 3.8.1+**
+- **Python 3.11+**
 - **Pandoc**: For format conversions
 - **LaTeX** (optional): For PDF generation via LaTeX
 - **Apple Pages** (macOS only): Alternative PDF generation
