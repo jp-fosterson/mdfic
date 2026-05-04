@@ -108,6 +108,7 @@ def html_story(output,css,files):
     metadata = parse_metadata(input,join='\n')
     number_scenes = get_in(metadata,['mdfic','number_scenes'],False)
 
+    cssargs = []
     if css:
         cssargs = ['-H',css]
     html = pandoc(input, '--standalone','--from=markdown', '--to=html',*cssargs) #.decode('utf8')
@@ -166,7 +167,7 @@ def pages_to_pdf(file,output):
 @click.option('--name',type=str, required=True, help="The filename stem of the story.")
 @click.option('--output', '-o', type=str,default="-", help="File to write to. (default stdout)")
 @click.option('--multi/--no-multi', default=False, help="Is this a multi-part story?")
-def gitignore(name,output,multi,latex):
+def gitignore(name,output,multi):
     """
     Output a .gitignore file for a story directory
     """

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Initial pytest test suite with 80 tests covering pure-logic functions in
+  `utils`, `tweets`, `makefile`, `latex`, and `docx`, plus end-to-end tests
+  for the seven pure-text CLI commands (`wc`, `gitignore`, `makefile`,
+  `tweet`, `css`, `hrrepl`, `strip-word-doc`).
+- Two lorem-ipsum asset stories under `tests/assets/` (single-file and
+  multi-file matching the `MULTI_TEMPLATE` `metadata.yaml` + `STORY-NN.md`
+  convention) plus shared fixtures in `tests/conftest.py`.
+- `[dependency-groups] dev` in `pyproject.toml` with `pytest`, and
+  `[tool.pytest.ini_options]` registering `pandoc`, `darwin`, `network`,
+  and `git` markers for forthcoming integration tests.
+
+### Fixed
+- `mdfic/docx.py` `prettyxml` referenced an undefined `xml_fname` and was
+  dead-on-call; now uses the function's `xml` parameter.
+- `mdfic gitignore` raised `TypeError` on every invocation because the
+  callback declared an unused `latex` parameter with no corresponding
+  Click option; the parameter has been removed.
+- `mdfic html` raised `UnboundLocalError` for `cssargs` whenever `--css`
+  was omitted; `cssargs` is now initialized before the conditional.
+
 ## [1.0.0] - 2025-09-06
 
 ### Added

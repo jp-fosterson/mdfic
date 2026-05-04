@@ -46,3 +46,17 @@ packages = ["mdfic"]
 
 [tool.setuptools.package-dir]
 "" = "."
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "pandoc: requires pandoc on PATH",
+    "darwin: macOS-only test",
+    "network: requires network/external API",
+    "git: requires git on PATH",
+]

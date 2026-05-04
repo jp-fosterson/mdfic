@@ -56,5 +56,4 @@ Pandoc is required for every format-conversion command (invoked via `utils.pando
 
 ## Known rough edges
 
-- `cli.gitignore` declares `latex` in its function signature but no corresponding Click option — passing `--multi` works, but the function will `TypeError` if Click ever supplies a `latex` kwarg. Don't "fix" by adding the option without checking callers.
 - `pyproject.toml` still uses `setuptools` as the build backend even though dev workflow is `uv`-driven; both coexist intentionally.

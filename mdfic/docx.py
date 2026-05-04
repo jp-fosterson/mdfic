@@ -92,7 +92,7 @@ def prettyxml(xml):
     """
     Pretty-print xml
     """
-    xml = minidom.parseString(xml_fname) 
+    xml = minidom.parseString(xml)
     return xml.toprettyxml()
 
 def xml_traverse(xml):
