@@ -126,6 +126,10 @@ make html    # HTML with CSS styling
 make epub    # E-book format
 ```
 
+> Note: `make epub` (and `make mobi`) shell out to pandoc directly from the
+> generated Makefile; mdfic does not currently produce EPUB through a
+> dedicated subcommand.
+
 ## Story Project Structure
 
 A typical mdfic story project looks like this:
@@ -162,8 +166,8 @@ my-novelette/
 
 **Generate manuscript formats:**
 ```bash
-# DOCX manuscripts
-mdfic docx --output story.docx --sffms story.md
+# DOCX manuscripts (SFFMS or plain)
+mdfic docx --sffms --output story.docx story.md
 
 # LaTeX/PDF (requires LaTeX installation)
 mdfic latex --documentclass sffms --output story.tex story.md
@@ -171,6 +175,10 @@ mdfic latex --documentclass sffms --output story.tex story.md
 # HTML with styling
 mdfic html --output story.html --css style.css story.md
 ```
+
+The `docx` command also accepts `--pspaces N` (number of spaces after a
+period, default `1`) and `--date / --no-date` (default on — appends a
+DRAFT tag and today's date to the title).
 
 **Project setup:**
 ```bash
@@ -197,6 +205,15 @@ mdfic copyedit --strength medium --output edited.md story.md
 
 # Generate tweets from story
 mdfic tweet --maxlen 280 --output tweets.txt story.md
+```
+
+**Utility commands:**
+```bash
+# Replace <hr /> in pandoc HTML output with custom scene-break markup
+mdfic hrrepl --withtxt "<center>• • •</center>" --output out.html story.html
+
+# Convert legacy 90s-era Mac Word documents to markdown-editable text
+mdfic strip-word-doc --output story.md old-mac-word.doc
 ```
 
 ### Copyedit Configuration
@@ -278,8 +295,8 @@ MDFIC follows professional manuscript formatting guidelines:
 - **Proper Typography**: Courier font, double-spacing, 1-inch margins
 - **Headers**: Author name, title, and page numbers on each page
 - **Word Count**: Rounded to nearest 50 words on title page
-- **Scene Breaks**: Centered # or numbered scenes
-- **End Marker**: "# # # # #" at story conclusion
+- **Scene Breaks**: Render as `• • •` (HTML), a centered rule (LaTeX/SFFMS), or sequential Arabic/Roman numerals when `mdfic.number_scenes` is set in metadata
+- **End Marker**: `# # # # #` (DOCX), `END` (HTML), or sffms-style end-of-story marker (LaTeX)
 
 ## Dependencies
 
@@ -288,12 +305,28 @@ MDFIC follows professional manuscript formatting guidelines:
 - **LaTeX** (optional): For PDF generation via LaTeX
 - **Apple Pages** (macOS only): Alternative PDF generation
 
-## Examples
+## Development
 
-See the `pub/` directory for example story projects showing:
-- Single-file stories (`avalanche/`, `mission/`)
-- Multi-part novelettes (`plunge-pool/`, `moviestars/`)
-- Different formatting options and metadata configurations
+Day-to-day development uses [`uv`](https://docs.astral.sh/uv/) with a
+project-local virtualenv at `.venv/`.
+
+```bash
+# Install dependencies (creates .venv/ if needed)
+uv sync
+
+# Run the CLI from the dev checkout
+uv run mdfic --help
+
+# Run the test suite
+uv run pytest
+```
+
+The test suite registers four pytest markers — `pandoc`, `darwin`,
+`network`, and `git` — and skips tests automatically when the
+corresponding tool or platform is unavailable, so a clean machine
+without pandoc or LaTeX installed will still see most tests pass.
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ## License
 
