@@ -1,4 +1,5 @@
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -40,3 +41,20 @@ def multi_parts(asset_dir):
         asset_dir / "multi" / "multi-01.md",
         asset_dir / "multi" / "multi-02.md",
     ]
+
+
+@pytest.fixture
+def tmp_git_repo(tmp_path, monkeypatch):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    monkeypatch.chdir(repo)
+    subprocess.run(["git", "init", "-q"], cwd=repo, check=True)
+    subprocess.run(
+        ["git", "-C", str(repo), "config", "user.email", "test@example.invalid"],
+        check=True,
+    )
+    subprocess.run(
+        ["git", "-C", str(repo), "config", "user.name", "Test User"],
+        check=True,
+    )
+    return repo

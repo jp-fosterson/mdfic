@@ -8,11 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial pytest test suite with 92 tests covering pure-logic functions in
+- Initial pytest test suite with 100 tests covering pure-logic functions in
   `utils`, `tweets`, `makefile`, `latex`, and `docx`, plus end-to-end tests
   for the seven pure-text CLI commands (`wc`, `gitignore`, `makefile`,
-  `tweet`, `css`, `hrrepl`, `strip-word-doc`) and the three pandoc-required
-  CLI commands (`latex`, `docx`, `html`).
+  `tweet`, `css`, `hrrepl`, `strip-word-doc`), the three pandoc-required
+  CLI commands (`latex`, `docx`, `html`), and the three external-dependency
+  CLI commands (`copyedit`, `pages-to-pdf`, `progress`).
 - Two lorem-ipsum asset stories under `tests/assets/` (single-file and
   multi-file matching the `MULTI_TEMPLATE` `metadata.yaml` + `STORY-NN.md`
   convention) plus shared fixtures in `tests/conftest.py`.
@@ -23,6 +24,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@pytest.mark.pandoc` tests when pandoc isn't on PATH. DOCX tests
   read back via `python-docx` and `zipfile` to verify SFFMS header
   injection; LaTeX/HTML tests use substring assertions on key tokens.
+- `tmp_git_repo` fixture in `tests/conftest.py` that initializes an
+  isolated repo (with per-repo identity) and `chdir`s into it, used by
+  the `progress` tests to drive real `git diff` without touching global
+  state.
+- `copyedit` CLI tests mock `mdfic.copyedit.copy_editor_chain` at the LCEL
+  pipeline boundary; an autouse fixture stubs `keyring.get_password` so
+  the module-level keyring lookup never prompts the keychain on dev
+  machines where `OPENAI_USER` is set.
+- `pages-to-pdf` CLI tests mock `mdfic.utils.oascript` and assert the
+  AppleScript was constructed with the correct absolute input/output
+  paths.
 
 ### Fixed
 - `mdfic/docx.py` `prettyxml` referenced an undefined `xml_fname` and was
