@@ -8,16 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial pytest test suite with 80 tests covering pure-logic functions in
+- Initial pytest test suite with 92 tests covering pure-logic functions in
   `utils`, `tweets`, `makefile`, `latex`, and `docx`, plus end-to-end tests
   for the seven pure-text CLI commands (`wc`, `gitignore`, `makefile`,
-  `tweet`, `css`, `hrrepl`, `strip-word-doc`).
+  `tweet`, `css`, `hrrepl`, `strip-word-doc`) and the three pandoc-required
+  CLI commands (`latex`, `docx`, `html`).
 - Two lorem-ipsum asset stories under `tests/assets/` (single-file and
   multi-file matching the `MULTI_TEMPLATE` `metadata.yaml` + `STORY-NN.md`
   convention) plus shared fixtures in `tests/conftest.py`.
 - `[dependency-groups] dev` in `pyproject.toml` with `pytest`, and
   `[tool.pytest.ini_options]` registering `pandoc`, `darwin`, `network`,
-  and `git` markers for forthcoming integration tests.
+  and `git` markers for integration tests.
+- Pandoc availability hook in `tests/conftest.py` that auto-skips
+  `@pytest.mark.pandoc` tests when pandoc isn't on PATH. DOCX tests
+  read back via `python-docx` and `zipfile` to verify SFFMS header
+  injection; LaTeX/HTML tests use substring assertions on key tokens.
 
 ### Fixed
 - `mdfic/docx.py` `prettyxml` referenced an undefined `xml_fname` and was

@@ -1,7 +1,17 @@
+import shutil
 from pathlib import Path
 
 import pytest
 from click.testing import CliRunner
+
+
+def pytest_collection_modifyitems(config, items):
+    if shutil.which("pandoc") is not None:
+        return
+    skip_pandoc = pytest.mark.skip(reason="pandoc not on PATH")
+    for item in items:
+        if "pandoc" in item.keywords:
+            item.add_marker(skip_pandoc)
 
 
 @pytest.fixture
