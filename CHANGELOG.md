@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-05-04
+
 ### Added
 - Initial pytest test suite with 100 tests covering pure-logic functions in
   `utils`, `tweets`, `makefile`, `latex`, and `docx`, plus end-to-end tests
@@ -35,6 +37,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `pages-to-pdf` CLI tests mock `mdfic.utils.oascript` and assert the
   AppleScript was constructed with the correct absolute input/output
   paths.
+- Configurable copyedit model and chunk size via `MDFIC_MODEL_NAME` and
+  `MDFIC_MAX_WORDS` environment variables.
+- `keyring` dependency for secure OpenAI API key storage; the copyedit
+  module reads the key from the system keychain via `OPENAI_USER`.
+- `CLAUDE.md` guidance file for AI-assisted development.
+
+### Changed
+- LangChain dependency split into `langchain`, `langchain-openai`, and
+  `langchain-core` packages (>=0.3,<0.4).
+- Minimum Python raised to 3.11.
+- Improved copyedit logging (stderr output, better formatting).
+- Revised copyedit prompt and addressed code-review feedback.
 
 ### Fixed
 - `mdfic/docx.py` `prettyxml` referenced an undefined `xml_fname` and was
